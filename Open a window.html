@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Single Audio Window</title>
+</head>
+<body>
+    <h2>Open Music Window</h2>
+
+    <button onclick="openMusicWindow()">Play Music</button>
+
+    <script>
+        function openMusicWindow() {
+            const musicWin = window.open("", "musicWindow", "width=400,height=200");
+
+            musicWin.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Music Player</title>
+                </head>
+                <body>
+                    <h3>Now Playing</h3>
+                    <audio autoplay controls>
+                        <source src="https://github.com/acodingprojects/TOOBAD/raw/refs/heads/main/All%20I%20Want%20for%20Christmas%20is%20You%20(Indian%20Christmas%20Remix)%20(mp3cut.net).mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </body>
+                </html>
+            `);
+        }
+    </script>
+</body>
+</html>
