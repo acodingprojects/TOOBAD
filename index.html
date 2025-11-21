@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Open window and run code</title>
+</head>
+<body>
+<h2>Open window and run code examples</h2>
+
+<button id="btnWrite">Open & write full HTML into new window</button>
+<button id="btnInject">Open & inject function then call it</button>
+
+<script>
+// Method 1: open a window and write a full HTML document into it
+document.getElementById('btnWrite').addEventListener('click', () => {
+const win = window.open('', '_blank', 'width=520,height=320');
+if (!win) { alert('Popup blocked. Allow popups for this site.'); return; }
+
+const html = `
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Child Window</title></head>
+<body>
+<h3>Child window (written by parent)</h3>
+<div id="counter">Counter: 0</div>
+<button id="stop">Stop</button>
+
+<script>
+// This script runs inside the child window
+let i = 0;
+const el = document.getElementById('counter');
+const timer = setInterval(() => {
+i++;
+el.textContent = 'Counter: ' + i;
+}, 500);
+
+document.getElementById('stop').addEventListener('click', () => {
+clearInterval(timer);
+const p = document.createElement('p');
+p.textContent = 'Stopped at ' + i;
+document.body.appendChild(p);
+});
+<\/script>
+</body>
+</html>
+`;
+
+// Write the content and close the stream to finish loading
+win.document.open();
+win.document.write(html);
+win.document.close();
+});
+
+// Method 2: open a same-origin empty window, then define/call functions on it
+document.getElementById('btnInject').addEventListener('click', () => {
+const child = window.open('', '_blank', 'width=520,height=320');
+if (!child) { alert('Popup blocked. Allow popups for this site.'); return; }
+
+// Put some minimal markup into the child
+child.document.body.innerHTML = '<h3>Child window (injected functions)</h3><div id="log"></div><button id="run">Run injected code</button>';
+
+// Define a function inside the child window (same-origin required)
+child.myInjectedFunction = function () {
+const log = child.document.getElementById('log');
+const msg = document.createElement('p');
+msg.textContent = 'Injected function ran at ' + new Date().toLocaleTimeString();
+log.appendChild(msg);
+};
+
+// Hook child's button to call the injected function
+child.document.getElementById('run').addEventListener('click', () => {
+// call the function that lives in the child window
+child.myInjectedFunction();
+});
+
+// Optionally call it immediately from the parent:
+child.myInjectedFunction();
+});
+</script>
+</body>
+</html>
